@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>画集</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','Noto Sans SC','Microsoft YaHei',sans-serif;background:#000;overflow:hidden;height:100vh}
+
+/* 底图 */
+.bg{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:-1;opacity:0;filter:brightness(1)blur(0);transition:filter .8s,opacity .8s;animation:r 1s .2s forwards}
+.bg.d{filter:brightness(.55)blur(4px)}
+@keyframes r{from{opacity:0}to{opacity:1}}
+
+/* 页面容器 */
+.W{display:flex;height:100vh;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.P{flex:0 0 100vw;height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden}
+
+/* 海报 */
+.I{width:80%;height:80%;display:flex;justify-content:center;align-items:center}
+.I img{max-width:100%;max-height:100%;object-fit:contain;opacity:0;transition:opacity .5s}
+.P.v .I img{opacity:1}
+
+/* 封面 */
+.C0{position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse at center,transparent 15%,rgba(0,0,0,.9) 100%);pointer-events:none}
+.C{position:relative;z-index:2;text-align:center;opacity:0;transform:scale(1.08);transition:opacity .8s .2s,transform .8s cubic-bezier(.16,1,.3,1) .2s}
+.C.v{opacity:1;transform:scale(1)}
+.C h1{font-size:clamp(2.5em,6vw,5em);font-weight:200;letter-spacing:.1em;background:linear-gradient(180deg,#f0d78c,#c9a84c 50%,#8b6914);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
+.C p{font-size:1em;letter-spacing:.2em;color:rgba(255,255,255,.5);margin-bottom:40px}
+.C l{display:block;height:1px;width:80px;background:linear-gradient(90deg,#c9a84c,transparent);margin:0 auto 20px}
+.C s{font-size:.7em;letter-spacing:.2em;color:rgba(255,255,255,.3)}
+
+/* 表情页 */
+.E{position:relative;width:100%;height:100vh;display:flex;align-items:center;background:#0a0a0a}
+.S{position:absolute;left:20px;top:50%;transform:translateY(-50%);z-index:10;display:flex;flex-direction:column;gap:4px;padding:12px 10px;background:rgba(10,10,10,.7);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.06);border-radius:6px;max-height:80vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(201,168,76,.3) transparent}
+.S::-webkit-scrollbar{width:3px}
+.S::-webkit-scrollbar-thumb{background:rgba(201,168,76,.3);border-radius:2px}
+.G{font-size:.55em;letter-spacing:.15em;color:rgba(255,255,255,.15);text-transform:uppercase;padding:6px 8px 2px;border-bottom:1px solid rgba(255,255,255,.04);margin-bottom:2px}
+.B{display:block;width:100%;padding:5px 10px;background:0 0;border:none;border-left:2px solid transparent;color:rgba(255,255,255,.35);font-size:.6em;font-family:inherit;text-align:left;cursor:pointer;transition:all .25s;white-space:nowrap;letter-spacing:.05em}
+.B:hover{color:rgba(255,255,255,.7);background:rgba(255,255,255,.03);padding-left:14px}
+.B.a{color:#c9a84c;border-left-color:#c9a84c;background:rgba(201,168,76,.08);padding-left:14px}
+.D{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:68%;display:flex;justify-content:center;align-items:center;opacity:0;transition:opacity .5s}
+.P.v .D{opacity:1}
+.D .F{width:100%;aspect-ratio:4/3;display:flex;justify-content:center;align-items:center;overflow:hidden}
+.D img{max-width:100%;max-height:100%;object-fit:contain;border-radius:2px;box-shadow:0 0 40px rgba(0,0,0,.6)}
+.H{position:absolute;top:24px;left:50%;transform:translateX(-50%);z-index:5;font-size:.65em;letter-spacing:.25em;color:rgba(255,255,255,.12);text-transform:uppercase}
+.H em{font-style:normal;color:rgba(201,168,76,.4)}
+
+/* 导航 */
+.N{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.06);border-radius:3px;padding:8px 14px;user-select:none}
+.N button{background:0 0;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:.7em;padding:2px 4px;transition:color .3s;font-family:inherit}
+.N button:hover{color:#c9a84c}
+.N .T{position:relative;width:260px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;cursor:pointer}
+.N .U{position:absolute;top:50%;transform:translate(-50%,-50%);width:2px;height:14px;background:#c9a84c;border-radius:1px;box-shadow:0 0 6px rgba(201,168,76,.4);cursor:grab;transition:left .3s cubic-bezier(.16,1,.3,1)}
+.N .U:active{cursor:grabbing}
+.N .M{font-size:.6em;color:rgba(255,255,255,.35);min-width:30px;text-align:center;letter-spacing:.05em}
+
+@media(max-width:768px){
+  .N{bottom:16px;padding:6px 10px;gap:6px}
+  .N .T{width:140px}
+  .I{width:90%;height:90%}
+  .S{left:8px;padding:8px 6px;max-height:70vh}
+  .B{font-size:.5em;padding:3px 6px}
+  .D{width:58%;right:3%}
+}
+@media(prefers-reduced-motion:reduce){
+  .W,.I img,.D,.C{transition:none}
+}
+</style>
+</head>
+<body>
+
+<img class="bg" id="bg" src="hero-bg.jpg" alt="" decoding="async">
+
+<div class="W" id="W">
+
+<div class="P" id="p0">
+  <div class="C0"></div>
+  <div class="C" id="C">
+    <h1>CONCEPT ARTS</h1>
+    <p>CHARACTER POSTER GALLERY</p>
+    <l></l>
+    <s>SCROLL</s>
+  </div>
+</div>
+
+<div class="P" id="p1"><div class="I"><img src="pages/1.jpg" alt="CG1"></div></div>
+<div class="P" id="p2"><div class="I"><img src="pages/2.jpg" alt="安洁莉娜"></div></div>
+<div class="P" id="p3"><div class="I"><img src="pages/3.jpg" alt="莉琪"></div></div>
+<div class="P" id="p4"><div class="I"><img src="pages/4.jpg" alt="霸哥"></div></div>
+<div class="P" id="p5"><div class="I"><img src="pages/5.jpg" alt="11"></div></div>
+
+<!-- 安洁莉娜表情 -->
+<div class="P" id="p6">
+  <div class="E">
+    <div class="H">ANGELINA — <em>EMOTION GALLERY</em></div>
+    <div class="S" id="Sa"></div>
+    <div class="D"><div class="F"><img id="ia" src="" alt=""></div></div>
+  </div>
+</div>
+
+<!-- 莉琪表情 -->
+<div class="P" id="p7">
+  <div class="E">
+    <div class="H">RICHIE — <em>EMOTION GALLERY</em></div>
+    <div class="S" id="Sl"></div>
+    <div class="D"><div class="F"><img id="il" src="" alt=""></div></div>
+  </div>
+</div>
+
+<div class="P" id="p8"><div class="I"><img src="pages/6.jpg" alt="1"></div></div>
+<div class="P" id="p9"><div class="I"><img src="pages/7.jpg" alt="5"></div></div>
+<div class="P" id="p10"><div class="I"><img src="pages/8.jpg" alt="coco"></div></div>
+
+</div>
+
+<div class="N">
+  <button onclick="g(-1)">◀</button>
+  <div class="T" id="T"><div class="U" id="U"></div></div>
+  <span class="M" id="M">1/11</span>
+  <button onclick="g(1)">▶</button>
+</div>
+
+<script>
+// 表情数据
+const em = {
+  a:{p:'An',d:'em_an',g:[
+    ['Normal',['Normal','Normal_Carrygun','Normal_D','Normal_Carrygun_D']],
+    ['Happy',['Happy','Happy_Carrygun','Happy_D','Happy_Carrygun_D']],
+    ['Smile',['Smile','Smile_Carrygun','Smile2','Smile2_Carrygun']],
+    ['Angry',['Angry','Angry_Carrygun']],
+    ['Sad',['Sad','Sad_Carrygun','Sad_D','Sad_Carrygun_D']],
+    ['Exclaim',['Exclaim','Exclaim_Carrygun','Exclaim_D','Exclaim_Carrygun_D']],
+    ['Shy',['Shy','Shy_Carrygun','Shy_D','Shy_Carrygun_D']],
+    ['Sluggish',['Sluggish','Sluggish_Carrygun','Sluggish_D','Sluggish_Carrygun_D']],
+    ['However',['However','However_Carrygun']],
+    ['Intolerable',['Intolerable','Intolerable_Carrygun']]
+  ]},
+  l:{p:'Li',d:'em_li',g:[
+    ['Normal',['Nomal','Nomal_Carrygun','Nomal_D','Nomal_Carrygun_D']],
+    ['Happy',['Happy','Happy_Carrygun','Happy_D','Happy_Carrygun_D']],
+    ['Sad',['Sad','Sad_Carrygun']],
+    ['Exclaim',['Exclaim','Exclaim_Carrygun','Exclaim_D','Exclaim_Carrygun_D']],
+    ['Sullen',['Sullen','Sullen_Carrygun','Sullen_D','Sullen_Carrygun_D']],
+    ['Worry',['Worry','Worry_Carrygun','Worry_D','Worry_Carrygun_D']],
+    ['NoAngry',['NoAngry','NoAngry_Carrygun','NoAngry_D','NoAngry_Carrygun_D']],
+    ['Bared',['Bared','Bared_Carrygun']],
+    ['Disdain',['Disdain','Disdain_Carrygun']],
+    ['Lifeless',['Lifeless','Lifeless_Carrygun']],
+    ['Rubbish',['Rubbish','Rubbish_Carrygun']]
+  ]}
+};
+
+// 显示名
+const dn = {
+  An_Normal:'Normal',An_Normal_Carrygun:'Normal (Carrygun)',An_Normal_D:'Normal (D)',An_Normal_Carrygun_D:'Normal (Carrygun D)',
+  An_Happy:'Happy',An_Happy_Carrygun:'Happy (Carrygun)',An_Happy_D:'Happy (D)',An_Happy_Carrygun_D:'Happy (Carrygun D)',
+  An_Smile:'Smile',An_Smile_Carrygun:'Smile (Carrygun)',An_Smile2:'Smile2',An_Smile2_Carrygun:'Smile2 (Carrygun)',
+  An_Angry:'Angry',An_Angry_Carrygun:'Angry (Carrygun)',
+  An_Sad:'Sad',An_Sad_Carrygun:'Sad (Carrygun)',An_Sad_D:'Sad (D)',An_Sad_Carrygun_D:'Sad (Carrygun D)',
+  An_Exclaim:'Exclaim',An_Exclaim_Carrygun:'Exclaim (Carrygun)',An_Exclaim_D:'Exclaim (D)',An_Exclaim_Carrygun_D:'Exclaim (Carrygun D)',
+  An_Shy:'Shy',An_Shy_Carrygun:'Shy (Carrygun)',An_Shy_D:'Shy (D)',An_Shy_Carrygun_D:'Shy (Carrygun D)',
+  An_Sluggish:'Sluggish',An_Sluggish_Carrygun:'Sluggish (Carrygun)',An_Sluggish_D:'Sluggish (D)',An_Sluggish_Carrygun_D:'Sluggish (Carrygun D)',
+  An_However:'However',An_However_Carrygun:'However (Carrygun)',
+  An_Intolerable:'Intolerable',An_Intolerable_Carrygun:'Intolerable (Carrygun)',
+  Li_Nomal:'Normal',Li_Nomal_Carrygun:'Normal (Carrygun)',Li_Nomal_D:'Normal (D)',Li_Nomal_Carrygun_D:'Normal (Carrygun D)',
+  Li_Happy:'Happy',Li_Happy_Carrygun:'Happy (Carrygun)',Li_Happy_D:'Happy (D)',Li_Happy_Carrygun_D:'Happy (Carrygun D)',
+  Li_Sad:'Sad',Li_Sad_Carrygun:'Sad (Carrygun)',
+  Li_Exclaim:'Exclaim',Li_Exclaim_Carrygun:'Exclaim (Carrygun)',Li_Exclaim_D:'Exclaim (D)',Li_Exclaim_Carrygun_D:'Exclaim (Carrygun D)',
+  Li_Sullen:'Sullen',Li_Sullen_Carrygun:'Sullen (Carrygun)',Li_Sullen_D:'Sullen (D)',Li_Sullen_Carrygun_D:'Sullen (Carrygun D)',
+  Li_Worry:'Worry',Li_Worry_Carrygun:'Worry (Carrygun)',Li_Worry_D:'Worry (D)',Li_Worry_Carrygun_D:'Worry (Carrygun D)',
+  Li_NoAngry:'NoAngry',Li_NoAngry_Carrygun:'NoAngry (Carrygun)',Li_NoAngry_D:'NoAngry (D)',Li_NoAngry_Carrygun_D:'NoAngry (Carrygun D)',
+  Li_Bared:'Bared',Li_Bared_Carrygun:'Bared (Carrygun)',
+  Li_Disdain:'Disdain',Li_Disdain_Carrygun:'Disdain (Carrygun)',
+  Li_Lifeless:'Lifeless',Li_Lifeless_Carrygun:'Lifeless (Carrygun)',
+  Li_Rubbish:'Rubbish',Li_Rubbish_Carrygun:'Rubbish (Carrygun)'
+};
+
+function build(cfg,sid,iid){
+  const s=document.getElementById(sid),img=document.getElementById(iid);
+  let cur;
+  const sel=k=>{if(k===cur)return;cur=k;s.querySelectorAll('.B').forEach(b=>b.classList.toggle('a',b.dataset.k===k));img.src='pages/'+cfg.d+'/'+k+'.jpg'};
+  s.innerHTML='';
+  let fk;
+  cfg.g.forEach(g=>{
+    const l=document.createElement('div');l.className='G';l.textContent=g[0];s.appendChild(l);
+    g[1].forEach(suf=>{
+      const k=cfg.p+'_'+suf;if(!fk)fk=k;
+      const b=document.createElement('button');b.className='B';b.dataset.k=k;b.textContent=dn[k]||suf;
+      b.onclick=()=>sel(k);s.appendChild(b);
+    });
+  });
+  if(fk)sel(fk);
+}
+build(em.a,'Sa','ia');
+build(em.l,'Sl','il');
+
+// 导航
+const W=document.getElementById('W'),bg=document.getElementById('bg'),C=document.getElementById('C'),N=11;
+let cp=0;
+const T=document.getElementById('T'),U=document.getElementById('U'),M=document.getElementById('M');
+
+function us(){const p=cp/(N-1)*100;U.style.left=p+'%';M.textContent=(cp+1)+'/'+N}
+function gp(p){
+  if(p<0||p>=N||p===cp)return;
+  cp=p;W.style.transform='translateX(-'+p*100+'vw)';us();
+  bg.classList.toggle('d',p>0);
+  document.querySelectorAll('.P').forEach((e,i)=>e.classList.toggle('v',i===p));
+  C.classList.toggle('v',p===0);
+}
+
+T.onclick=e=>{const r=T.getBoundingClientRect();gp(Math.round((e.clientX-r.left)/r.width*(N-1)))};
+let dr=!1;
+T.addEventListener('mousedown',e=>{
+  const r=T.getBoundingClientRect(),cx=e.clientX-r.left,tx=parseFloat(U.style.left||'0')/100*r.width;
+  if(Math.abs(cx-tx)<50){dr=!0;U.style.transition='none';e.preventDefault()}
+  else gp(Math.round(cx/r.width*(N-1)));
+});
+addEventListener('mousemove',e=>{
+  if(!dr)return;
+  const r=T.getBoundingClientRect(),p=Math.round(Math.max(0,Math.min(1,(e.clientX-r.left)/r.width))*(N-1));
+  if(p!==cp){cp=p;W.style.transform='translateX(-'+p*100+'vw)';U.style.left=p/(N-1)*100+'%';M.textContent=(p+1)+'/'+N;bg.classList.toggle('d',p>0);document.querySelectorAll('.P').forEach((e,i)=>e.classList.toggle('v',i===p));C.classList.toggle('v',p===0)}
+});
+addEventListener('mouseup',()=>{if(dr){dr=!1;U.style.transition='';us()}});
+
+function g(d){gp(cp+d)}
+
+document.querySelector('.P').classList.add('v');
+setTimeout(()=>C.classList.add('v'),300);
+
+// 滚轮
+let wt=null;
+addEventListener('wheel',e=>{
+  if(e.target.closest('.S'))return;
+  if(wt)return;
+  if(e.deltaY>0&&cp<N-1){gp(cp+1);wt=setTimeout(()=>{wt=null},200)}
+  else if(e.deltaY<0&&cp>0){gp(cp-1);wt=setTimeout(()=>{wt=null},200)}
+},{passive:!0});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')g(1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')g(-1);
+});
+</script>
+</body>
+</html>
